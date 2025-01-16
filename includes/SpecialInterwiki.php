@@ -313,6 +313,24 @@ class SpecialInterwiki extends SpecialPage {
 					'iw_trans' => $trans
 				];
 
+				/*
+				 * Fandom change - start
+				 * Allow extensions to modify and abort interwiki link submissions
+				 * to prevent unwanted interwiki links from being added (UGC-6188)
+				 * @author mkostrzewski
+				 */
+				$hookStatus = Status::newGood();
+				$this->getHookContainer()->run( 'InterwikiSubmit',
+					[ &$rows, $hookStatus ] );
+
+				if ( !$hookStatus->isOK() ) {
+					$formatter = MediaWikiServices::getInstance()->getFormatterFactory()
+						->getStatusFormatter( $this->getContext() );
+					$status->fatal( $formatter->getMessage( $hookStatus ) );
+					break;
+				}
+				// Fandom change - end
+
 				if ( $prefix === '' || $theurl === '' ) {
 					$status->fatal( 'interwiki-submit-empty' );
 					break;
