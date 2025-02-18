@@ -310,9 +310,8 @@ class SpecialInterwiki extends SpecialPage {
 				[ &$rows, $hookStatus ] );
 
 			if ( !$hookStatus->isOK() ) {
-				$formatter = MediaWikiServices::getInstance()->getFormatterFactory()
-					->getStatusFormatter( $this->getContext() );
-				$status->fatal( $formatter->getMessage( $hookStatus ) );
+				$message = $hookStatus->getMessage();
+				$status->fatal( $message );
 				break;
 			}
 			// Fandom change - end
