@@ -90,8 +90,12 @@ class SpecialInterwiki extends SpecialPage {
 			}
 
 			return false;
-		} else {
-			$this->checkReadOnly();
+		} elseif ( MediaWikiServices::getInstance()->getReadOnlyMode()->isReadOnly() ) {
+			if ( $out ) {
+				throw new ReadOnlyError();
+			}
+
+			return false;
 		}
 
 		return true;
